@@ -37,4 +37,4 @@ var generateDynamicKey = function(req, resp) {
 
 app.get('/dynamic_key', generateDynamicKey);
 
-app.listen(8082);
+app.listen(8081);

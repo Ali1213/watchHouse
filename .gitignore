@@ -1,6 +1,5 @@
 node_modules
 .DS_Store
 rev-manifest.json
-dist
 
 /push.sh
