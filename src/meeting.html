@@ -28,10 +28,10 @@
             Channel:
             <input id="channel" type="text" value="1000" size="4"></input>
             Host: -->
-            <input id="video" type="checkbox" checked></input>
-            <input id="Account" type="text" value="1111" size="36"></input>
+            <input id="video" type="checkbox" checked style="display: none"></input>
+            <input id="Account" type="text" value="" size="36" placeholder="请输入你要查看的房间号"></input>
             <!-- <button id="join" class="btn btn-primary" onclick="join()">Join</button> -->
-            <button id="leave" class="btn btn-primary" onclick="leave()">Leave</button>
+            <button id="leave" class="btn btn-primary" onclick="leave()" style="display: none">Leave</button>
             <!-- <button id="publish" class="btn btn-primary" onclick="publish()">Publish</button> -->
             <!-- <button id="unpublish" class="btn btn-primary" onclick="unpublish()">Unpublish</button> -->
         </div>
@@ -115,11 +115,13 @@
                     if (/* document.getElementById("video").checked */ true) {
                         camera = videoSource.value;
                         microphone = audioSource.value;
+
                         console.log('======================', document.getElementById("video").checked)
+
                         localStream = AgoraRTC.createStream({ streamID: uid, audio: true, cameraId: camera, microphoneId: microphone, video: true/* document.getElementById("video").checked */, screen: false });
                         //localStream = AgoraRTC.createStream({streamID: uid, audio: false, cameraId: camera, microphoneId: microphone, video: false, screen: true, extensionId: 'minllpmhdgpndnkomcoccfekfegnlikg'});
                         // if (document.getElementById("video").checked) {
-                        localStream.setVideoProfile('360P');
+                        localStream.setVideoProfile('240P');
 
                         // }
 
