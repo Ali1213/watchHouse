@@ -30,6 +30,7 @@
             Host: -->
             <input id="video" type="checkbox" checked style="display: none"></input>
             <input id="Account" type="text" value="" size="36" placeholder="请输入你要查看的房间号"></input>
+            <button id="ccc" onclick="join()"></button>
             <!-- <button id="join" class="btn btn-primary" onclick="join()">Join</button> -->
             <button id="leave" class="btn btn-primary" onclick="leave()" style="display: none">Leave</button>
             <!-- <button id="publish" class="btn btn-primary" onclick="publish()">Publish</button> -->
@@ -247,7 +248,6 @@
                     }
                 }
                 var self = this
-                setTimeout(join.bind(self), 3000)
 
             });
         }
