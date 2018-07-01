@@ -628,25 +628,45 @@
 
             // }
 
+            const clearArrAndFill = (arr, content) => {
+                arr.length = 0;
+                arr.push(...content)
+            }
+
+            const msg = ['w','s','a','d'];
+            const run = ['w','s','a','d'];
+            const camera = ['i','k','j','l'];
+
+            $('#control .now').on('click', () => {
+                let val = $('#control .now').text()
+                switch (val){
+                    case '车':
+                    $('#control .now').text('摄')
+                    clearArrAndFill(msg,camera)
+                    break;
+                    case '摄':
+                    $('#control .now').text('车')
+                    clearArrAndFill(msg,run)
+                    break;
+                }
+                client.sendMessage('z', reciveAcount)
+            })
+
             $('#control .up').on('click', () => {
-                console.log('w')
                 const reciveAcount = $('#Account').val()
-                client.sendMessage('w', reciveAcount)
+                client.sendMessage(msg[0], reciveAcount)
             })
             $('#control .down').on('click', () => {
-                console.log('s')
                 const reciveAcount = $('#Account').val()
-                client.sendMessage('s', reciveAcount)
+                client.sendMessage(msg[1], reciveAcount)
             })
             $('#control .left').on('click', () => {
-                console.log('a')
                 const reciveAcount = $('#Account').val()
-                client.sendMessage('a', reciveAcount)
+                client.sendMessage(msg[2], reciveAcount)
             })
             $('#control .right').on('click', () => {
-                console.log('d')
                 const reciveAcount = $('#Account').val()
-                client.sendMessage('d', reciveAcount)
+                client.sendMessage(msg[3], reciveAcount)
             })
         });
     });
