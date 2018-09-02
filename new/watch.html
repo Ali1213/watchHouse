@@ -217,7 +217,7 @@
         var APP_ID = '1a486ee31a304318a53b51135a584947'
         // var APP_ID = '9b2179c0cba0431bb9899853ae87d3e7'
         var APP_CERT = ''
-        var LOGIN_ACCOUNT = getSearchString("open_id")
+        var LOGIN_ACCOUNT = getSearchString("open_id") || 'a'+ Math.random().toString(16).slice(2,10)
         var SENDTO = getSearchString("to") || '22'
         var signal = new SignalingClient(APP_ID, APP_CERT);
 
