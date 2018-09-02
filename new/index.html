@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Web UI</title>
+    <link rel="stylesheet" href="http://i.gtimg.cn/vipstyle/frozenui/2.0.0/css/frozen.css">
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.js"></script>
+</head>
+<body>
+    <div class="ui-tab ">
+        <ul class="ui-tab-nav ui-border-b ">
+            <li class="hot current"><span>热门</span></li>
+            <li class="all"><span>全部</span></li>
+        </ul>
+        <!-- <ul class="ui-tab-content" style="width:200%">
+            <li>
+            </li>
+            <li>内容2</li>
+        </ul> -->
+        <section class="ui-panel ui-grid ui-grid-trisect">
+            <ul>
+                <li class="go">
+                    <div class="ui-img-vertical ui-grid-halve-img">
+                        <span style="background-image:url(./img/2.png)"></span>
+                    </div>
+                    <div class="ui-grid-info ui-border-r">
+                        <h4 class="ui-nowrap-multi">测试</h4>
+                        <p class="ui-nowrap">for test</p>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </div>
+    <script type="text/javascript">
+        $('.all').click(()=>{
+            $('.hot').removeClass('current')
+            $('.all').addClass('current')
+        })
+
+        $('.hot').click(()=>{
+            $('.all').removeClass('current')
+            $('.hot').addClass('current')
+        })
+
+        $('.go').click(()=>{
+            window.location.href = './watch.html?open_id=aa&c_id=777'
+        })
+    </script>
+</body>
+</html>

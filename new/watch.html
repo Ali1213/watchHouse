@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="http://cdn.agora.io/sdk/web/AgoraRTCSDK-2.4-latest.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.js"></script>
+    <!-- <script src="./js/AgoraRTCSDK-2.3.1.js"></script> -->
+    <script src="./js/event.js"></script>
+    <script src="./js/signalingClient.js"></script>
+    <script src="./js/AgoraSig-1.4.0.js"></script>
+
+    <link rel="stylesheet" href="http://i.gtimg.cn/vipstyle/frozenui/2.0.0/css/frozen.css">
+
+    <style type="text/css">
+        #main {
+            width: 100%;
+            height: 100%;
+        }
+
+        #video {
+            width: 100%;
+            height: 50%;
+            background: black;
+            margin-bottom: 10px;
+        }
+
+        div.car-control {
+            width: 45%;
+            display: inline-block;
+            float: left;
+        }
+
+        .car-control .row {
+            width: 100%;
+            height: 34px;
+        }
+
+        .car-control .now {
+            display: inline-block;
+            width: 53px;
+            text-align: center;
+            height: 30px;
+            line-height: 30px;
+        }
+
+        .car-control .up,
+        .car-control .down {
+            margin-left: 54px;
+        }
+
+        div.camera-control {
+            width: 45%;
+            display: inline-block;
+            float: right;
+        }
+
+        .camera-control .row {
+            width: 100%;
+            height: 34px;
+        }
+
+        .camera-control .now {
+            display: inline-block;
+            width: 53px;
+            text-align: center;
+            height: 30px;
+            line-height: 30px;
+        }
+
+        .camera-control .up,
+        .camera-control .down {
+            margin-left: 54px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ui-dialog">
+        <div class="ui-dialog-cnt">
+            <div class="ui-dialog-bd">
+                <p>不好意思，您的浏览器暂时不支持我们的服务，请更换为google浏览器。</p>
+            </div>
+            <div class="ui-dialog-ft">
+                <button type="button" data-role="button" class="btn-recommand">确认知晓</button>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="video">
+        </div>
+        <div class="car-control">
+            <div class="row">
+                <button class="ui-btn up">↑</button>
+            </div>
+            <div class="row">
+                <!-- <div class="wrapper"> -->
+                <button class="ui-btn left">←</button>
+                <!-- <span class="now">car</span> -->
+                <div class="now">car</div>
+                <button class="ui-btn right">→</button>
+                <!-- </div> -->
+            </div>
+            <div class="row">
+                <button class="ui-btn down">↓</button>
+            </div>
+        </div>
+        <div class="camera-control">
+            <div class="row">
+                <button class="ui-btn up">↑</button>
+            </div>
+            <div class="row">
+                <!-- <div class="wrapper"> -->
+                <button class="ui-btn left">←</button>
+                <!-- <span class="now">car</span> -->
+                <div class="now">camera</div>
+                <button class="ui-btn right">→</button>
+                <!-- </div> -->
+            </div>
+            <div class="row">
+                <button class="ui-btn down">↓</button>
+            </div>
+        </div>
+    </div>
+    <script language="javascript">
+
+        // 视频相关部分
+        $(document.body).css({
+            width: "100%",
+            height: screen.height
+        })
+
+        $('.btn-recommand').click(() => {
+            $('.ui-dialog').removeClass('show')
+            return
+        })
+
+        if (!AgoraRTC.checkSystemRequirements()) {
+            $('.ui-dialog').addClass('show')
+        } else {
+
+            var client = AgoraRTC.createClient({ mode: "live", codec: "h264" })
+            var CHANNEL_NAME = getSearchString('c_id') || '777'
+            var AGORA_APP_ID = '1a486ee31a304318a53b51135a584947'
+            // var AGORA_APP_ID = '9b2179c0cba0431bb9899853ae87d3e7'
+            setTimeout(join, 5000)
+            function join() {
+                client.init(AGORA_APP_ID, () => {
+
+                    client.join(null, CHANNEL_NAME, null, function (uid) {
+
+                        client.on('stream-added', function (evt) {
+                            var stream = evt.stream;
+                            console.log("New stream added: " + stream.getId());
+
+                            client.subscribe(stream, function (err) {
+                                console.log("Subscribe stream failed", err);
+                            });
+                        });
+
+                    })
+                }, (err) => {
+                    console.log('client init failed ', err)
+                })
+
+
+                client.on('stream-added', function (evt) {
+                    var stream = evt.stream;
+                    console.log("New stream added: " + stream.getId());
+                    console.log("Subscribe ", stream);
+                    client.subscribe(stream, function (err) {
+                        console.log("Subscribe stream failed", err);
+                    });
+                });
+
+                client.on('stream-subscribed', function (evt) {
+                    var stream = evt.stream;
+                    console.log("Subscribe remote stream successfully: " + stream.getId());
+                    if ($('div#video #agora_remote' + stream.getId()).length === 0) {
+                        $('div#video').append('<div id="agora_remote' + stream.getId() + '" style="width:100%;height:100%;"></div>');
+                    }
+                    console.log("Subscribe remote stream successfully: " + stream.getId());
+                    stream.play('agora_remote' + stream.getId());
+                    // stream.play('video');
+                })
+
+                client.on('stream-removed', function (evt) {
+                    var stream = evt.stream;
+                    stream.stop();
+                    $('#agora_remote' + stream.getId()).remove();
+                    console.log("Remote stream is removed " + stream.getId());
+                });
+            }
+        }
+
+        function getSearchString(key) {
+            // 获取URL中?之后的字符
+            var str = location.search;
+            str = str.substring(1, str.length);
+
+            // 以&分隔字符串，获得类似name=123这样的元素数组
+            var arr = str.split("&");
+            var obj = new Object();
+
+            // 将每一个数组元素以=分隔并赋给obj对象    
+            for (var i = 0; i < arr.length; i++) {
+                var tmp_arr = arr[i].split("=");
+                obj[decodeURIComponent(tmp_arr[0])] = decodeURIComponent(tmp_arr[1]);
+            }
+            return obj[key];
+        }
+
+        // 信令相关
+        var APP_ID = '1a486ee31a304318a53b51135a584947'
+        // var APP_ID = '9b2179c0cba0431bb9899853ae87d3e7'
+        var APP_CERT = ''
+        var LOGIN_ACCOUNT = getSearchString("open_id")
+        var SENDTO = getSearchString("to") || '22'
+        var signal = new SignalingClient(APP_ID, APP_CERT);
+
+        console.log(LOGIN_ACCOUNT)
+        console.log(SENDTO)
+        var sendMessage = function (text, SENDTO = '11') {
+
+            if (!text.trim()) return false
+            let msg_item = { ts: new Date(), text: text, account: LOGIN_ACCOUNT };
+
+            console.log(msg_item)
+            signal.sendMessage(SENDTO, text);
+        }
+
+
+        signal.sessionEmitter.on('onMessageInstantReceive', (account, uid, msg) => {
+
+            console.log(account, msg, 'instant')
+        })
+        signal.channelEmitter.on('onMessageChannelReceive', (account, uid, msg) => {
+            if (account !== signal._account) {
+                console.log(account, msg, 'channel')
+            }
+        })
+
+        signal.login(LOGIN_ACCOUNT, '_no_need_token').then(() => {
+            $('.car-control,.camera-control').on('click', () => {
+                $('.ui-dialog-bd p').text('演示环节，暂不允许其他用户控制，敬请谅解')
+
+                $('.ui-dialog').addClass('show')
+            })
+        }).catch(console.error);
+
+        function controlButtonWork() {
+            const msg = ['w', 's', 'a', 'd'];
+            const camera = ['i', 'k', 'j', 'l'];
+
+            $('.car-control .up').on('click', () => {
+                sendMessage(msg[0], SENDTO)
+            })
+            $('.car-control .down').on('click', () => {
+                sendMessage(msg[1], SENDTO)
+            })
+            $('.car-control .left').on('click', () => {
+                sendMessage(msg[2], SENDTO)
+            })
+            $('.car-control .right').on('click', () => {
+                sendMessage(msg[3], SENDTO)
+            })
+
+
+            $('.camera-control .up').on('click', () => {
+                sendMessage(camera[0], SENDTO)
+            })
+            $('.camera-control .down').on('click', () => {
+                sendMessage(camera[1], SENDTO)
+            })
+            $('.camera-control .left').on('click', () => {
+                sendMessage(camera[2], SENDTO)
+            })
+            $('.camera-control .right').on('click', () => {
+                sendMessage(camera[3], SENDTO)
+            })
+        }
+    </script>
+</body>
+
+</html>
